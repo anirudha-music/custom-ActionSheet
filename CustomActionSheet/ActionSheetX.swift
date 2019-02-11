@@ -26,15 +26,16 @@ class ActionSheetX: UIView {
     func setupView(_ title: String, buttons: [UIButton]) {
         // backgroundViewTransparent
         backgroundViewTransparent = UIView()
-        backgroundViewTransparent.translatesAutoresizingMaskIntoConstraints = false
         backgroundViewTransparent.backgroundColor = UIColor.black.withAlphaComponent(0.3)
         
         self.addSubview(backgroundViewTransparent)
         
-        backgroundViewTransparent.leadingAnchor.constraint(equalTo: self.leadingAnchor).isActive = true
-        backgroundViewTransparent.trailingAnchor.constraint(equalTo: self.trailingAnchor).isActive = true
-        backgroundViewTransparent.topAnchor.constraint(equalTo: self.topAnchor).isActive = true
-        backgroundViewTransparent.bottomAnchor.constraint(equalTo: self.bottomAnchor).isActive = true
+        backgroundViewTransparent.addConstraints([
+            equal(self, \.topAnchor),
+            equal(self, \.bottomAnchor),
+            equal(self, \.leadingAnchor),
+            equal(self, \.trailingAnchor)
+            ])
         
         // backgroundView
         backgroundView = UIView()
@@ -43,21 +44,22 @@ class ActionSheetX: UIView {
         
         self.addSubview(backgroundView)
         
-        // backgroundView.heightAnchor.constraint(equalToConstant: 230).isActive = true
         let safeArea = self.layoutMarginsGuide
         backgroundView.leadingAnchor.constraint(equalTo: safeArea.leadingAnchor).isActive = true
         backgroundView.trailingAnchor.constraint(equalTo: safeArea.trailingAnchor).isActive = true
         backgroundView.bottomAnchor.constraint(equalTo: safeArea.bottomAnchor).isActive = true
+        
         // title label
         let titleLabel = UILabel()
-        titleLabel.translatesAutoresizingMaskIntoConstraints = false
         titleLabel.text = title
         
         backgroundView.addSubview(titleLabel)
         
-        titleLabel.topAnchor.constraint(equalTo: backgroundView.topAnchor, constant: 20).isActive = true
-        titleLabel.leadingAnchor.constraint(equalTo: backgroundView.leadingAnchor, constant: 20).isActive = true
-        titleLabel.trailingAnchor.constraint(equalTo: backgroundView.trailingAnchor, constant: -20).isActive = true
+        titleLabel.addConstraints([
+            equal(backgroundView, \.topAnchor, constant: 20),
+            equal(backgroundView, \.trailingAnchor, constant: 20),
+            equal(backgroundView, \.leadingAnchor, constant: 20)
+            ])
         
         var stackViewSubviews = [UIView]()
         for button in buttons {
@@ -76,39 +78,42 @@ class ActionSheetX: UIView {
         }
         
         let stackView = UIStackView(arrangedSubviews: stackViewSubviews)
-        stackView.translatesAutoresizingMaskIntoConstraints = false
         stackView.axis = .horizontal
         stackView.alignment = .center
         stackView.spacing = 16
         
         backgroundView.addSubview(stackView)
         
-        stackView.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 8).isActive = true
-        stackView.centerXAnchor.constraint(equalTo: backgroundView.centerXAnchor).isActive = true
-        stackView.centerYAnchor.constraint(equalTo: backgroundView.centerYAnchor).isActive = true
+        stackView.addConstraints([
+            equal(titleLabel, \.topAnchor, \.bottomAnchor, constant: 8),
+            equal(backgroundView, \.centerXAnchor),
+            equal(backgroundView, \.centerYAnchor)
+            ])
         
         let horizontalLine = UIView()
         horizontalLine.backgroundColor = UIColor.red
         // set background color #F1F9FF
-        horizontalLine.translatesAutoresizingMaskIntoConstraints = false
         
         backgroundView.addSubview(horizontalLine)
         
-        horizontalLine.heightAnchor.constraint(equalToConstant: 1).isActive = true
-        horizontalLine.topAnchor.constraint(equalTo: stackView.bottomAnchor, constant: 8).isActive = true
-        horizontalLine.leadingAnchor.constraint(equalTo: titleLabel.leadingAnchor).isActive = true
-        horizontalLine.trailingAnchor.constraint(equalTo: titleLabel.trailingAnchor).isActive = true
+        horizontalLine.addConstraints([
+            equal(\.heightAnchor, to: 1),
+            equal(stackView, \.topAnchor, \.bottomAnchor, constant: 8),
+            equal(backgroundView, \.leadingAnchor),
+            equal(backgroundView, \.trailingAnchor)
+            ])
         
         let button = UIButton()
         button.setTitle("Cancel", for: .normal)
         button.setTitleColor(.red, for: .normal)
-        button.translatesAutoresizingMaskIntoConstraints = false
         
         backgroundView.addSubview(button)
-        button.centerXAnchor.constraint(equalTo: backgroundView.centerXAnchor).isActive = true
-        button.topAnchor.constraint(equalTo: horizontalLine.bottomAnchor, constant: 8).isActive = true
         
-        button.bottomAnchor.constraint(equalTo: backgroundView.bottomAnchor, constant: -8).isActive = true
+        button.addConstraints([
+            equal(backgroundView, \.centerXAnchor),
+            equal(horizontalLine, \.topAnchor, \.bottomAnchor, constant: 8),
+            equal(backgroundView, \.bottomAnchor, constant: -8)
+            ])
         
         button.addTarget(self, action: #selector(self.hide), for: .touchUpInside)
         
